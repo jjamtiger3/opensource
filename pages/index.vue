@@ -66,9 +66,9 @@
           <v-btn
             color="primary"
             nuxt
-            to="/inspire"
+            to="/todolist"
           >
-            Continue
+          GoTo TodoList Page
           </v-btn>
         </v-card-actions>
       </v-card>
