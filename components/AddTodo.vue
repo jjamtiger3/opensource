@@ -60,9 +60,8 @@ export default {
          * 2. 전달 받은 값 post
          * 3. 이상없이 갔으면 전달받은 값 state에 추가
          */
-        alert(123);
         const { input_todo, date } = this;
-        console.log(input_todo, date);
+        this.$emit('addTodo', input_todo, date);
     }
   }
 }
