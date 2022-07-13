@@ -5,6 +5,16 @@
                 <h1> TodoList Page </h1>
             </v-col>
         </v-row>
+        <v-data-table
+            :headers="headers"
+            :items="todoList"
+            :items-per-page="page_cnt"
+            item-key="no"
+            show-select
+            class="elevation-1"
+            @click:row="handleRowClick"
+            >
+        </v-data-table>
         <add-todo @addTodo="addTodo"></add-todo>
     </v-container>
 </template>
@@ -14,15 +24,58 @@ import AddTodo from '../components/AddTodo.vue'
 export default {
   components: { AddTodo },
   name: 'TodoListPage',
+  data() {
+    return {
+        todoList: [],
+        headers: [],
+        page_cnt: 0
+    }
+  },
+  mounted() {
+    this.requestData();
+  },
   methods: {
     getTodoList() {
         const todoList = JSON.parse(localStorage.getItem('todoList')) || [];
+        return todoList;
     },
     addTodo(text, date) {
         console.log(text, date);
         const todoList = JSON.parse(localStorage.getItem('todoList')) || [];
-        todoList.push({text, date});
+        let no = 1;
+        if (todoList.length > 0) {
+            no = todoList[todoList.length - 1].no + 1;
+        }
+        todoList.push({text, date, no});
         localStorage.setItem('todoList', JSON.stringify(todoList));
+        this.todoList = todoList;
+    },
+    requestData() {
+        this.todoList = this.getTodoList();
+        this.headers = [
+            {
+                text: 'No',
+                align: 'start',
+                sortable: false,
+                value: 'no'
+            },
+            {
+                text: '할일',
+                align: 'start',
+                sortable: false,
+                value: 'text'
+            }, 
+            {
+                text: '기한',
+                align: 'start',
+                sortable: true,
+                value: 'date'
+            }
+        ];
+        this.page_cnt = 5; // 추후 select를 통해 선택가능하도록 수정
+    },
+    handleRowClick (row, data) {
+        data.select(!data.isSelected);
     }
   }
 }
