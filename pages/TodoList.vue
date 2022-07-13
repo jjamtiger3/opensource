@@ -51,7 +51,7 @@ export default {
         this.todoList = todoList;
     },
     requestData() {
-        this.todoList = this.getTodoList();
+        // this.todoList = this.getTodoList();
         this.headers = [
             {
                 text: 'No',
@@ -72,7 +72,6 @@ export default {
                 value: 'date'
             }
         ];
-        this.page_cnt = 5; // 추후 select를 통해 선택가능하도록 수정
     },
     handleRowClick (row, data) {
         data.select(!data.isSelected);
