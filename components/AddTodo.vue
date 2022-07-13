@@ -61,7 +61,7 @@ export default {
          * 3. 이상없이 갔으면 전달받은 값 state에 추가
          */
         const { input_todo, date } = this;
-        this.$emit('addTodo', input_todo, date);
+        this.$emit('addTodo', input_todo, new Date(date).getTime());
     }
   }
 }
