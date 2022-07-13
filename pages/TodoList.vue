@@ -30,6 +30,15 @@ export default {
     }
   },
   mounted() {
+    // TODO 기한이 yyyy-MM-dd로 나오도록
+    // 완료여부가 체크박스로 나오도록
+    // 할일 클릭시 input나오도록
+    // 기한 클릭시 datepicker나오도록
+    // 완료여부 클릭시 checkbox 나오도록
+    // multirow 선택후 삭제 -> 쓰래기통 구현
+    // deadline이 3일이내로 남은 경우 경고표시 -> warning icon띄우면될듯
+    // 공통함수 만들어야 할듯
+    // 우측상단에 검색기능 추가 -> filteredItem넣어야할것 -> todoList대신 filteredTodoList추가
     this.headers = [
         {
             text: 'No',
