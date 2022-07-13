@@ -35,9 +35,11 @@ export default {
     this.requestData();
   },
   methods: {
-    getTodoList() {
-        const todoList = JSON.parse(localStorage.getItem('todoList')) || [];
-        return todoList;
+    async getTodoList() {
+        // const todoList = JSON.parse(localStorage.getItem('todoList')) || [];
+        // return todoList;
+        const todoList = await this.$axios.get('/get_todo_lists');
+        return todoList.data.todoList;
     },
     addTodo(text, date) {
         console.log(text, date);
@@ -50,8 +52,8 @@ export default {
         localStorage.setItem('todoList', JSON.stringify(todoList));
         this.todoList = todoList;
     },
-    requestData() {
-        // this.todoList = this.getTodoList();
+    async requestData() {
+        this.todoList = await this.getTodoList();
         this.headers = [
             {
                 text: 'No',
