@@ -21,12 +21,8 @@ app.post('/add_todo', (req, res) => {
     json.todoList.push(body);
     console.log(json);
     fs.writeFile(todoPath, JSON.stringify(json), function(err) {
-        res.writeHead(200, {
-            'Content-Type': 'text/json'
-        });
-        res.end();
+      res.send(200);
     });
-    res.send(200);
 });
 
 

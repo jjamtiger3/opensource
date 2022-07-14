@@ -9,6 +9,7 @@
             :headers="headers"
             :items="todoList"
             item-key="no"
+            items-per-page="5"
             show-select
             class="elevation-1"
             @click:row="handleRowClick"
@@ -31,6 +32,11 @@ export default {
   },
   mounted() {
     // TODO 기한이 yyyy-MM-dd로 나오도록
+    // ADD구현 (완)
+    // REMOVE구현
+    // -> 쓰래기통 아이콘 구현
+    // -> add옆 쓰래기통 구현
+    // UPDATE구현
     // 완료여부가 체크박스로 나오도록
     // 할일 클릭시 input나오도록
     // 기한 클릭시 datepicker나오도록
@@ -51,7 +57,7 @@ export default {
             align: 'start',
             sortable: false,
             value: 'text'
-        }, 
+        },
         {
             text: '기한',
             align: 'start',
@@ -82,8 +88,8 @@ export default {
             no = todoList[todoList.length - 1].no + 1;
         }
         const todo = {
-            no, 
-            text, 
+            no,
+            text,
             done: false,
             deadline
         };
