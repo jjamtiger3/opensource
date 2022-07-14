@@ -41,6 +41,17 @@
                 mdi-plus
               </v-icon>
             </v-btn>
+            <v-btn
+              class="mx-2"
+              fab
+              dark
+              color="pink"
+              @click="removeTodo"
+            >
+              <v-icon dark>
+                mdi-delete
+              </v-icon>
+            </v-btn>
           </v-col>
         </v-row>
     </v-container>
@@ -62,6 +73,10 @@ export default {
          */
         const { input_todo, date } = this;
         this.$emit('addTodo', input_todo, new Date(date).getTime());
+    },
+    removeTodo () {
+      // 선택된 행 삭제 -> 선택된 행은 다수일 수 있음
+      this.$emit('removeTodo');
     }
   }
 }

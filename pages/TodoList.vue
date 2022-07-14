@@ -9,20 +9,20 @@
             :headers="headers"
             :items="todoList"
             item-key="no"
-            items-per-page="5"
+            :items-per-page="5"
             show-select
             class="elevation-1"
             @click:row="handleRowClick"
             >
         </v-data-table>
-        <add-todo @addTodo="addTodo"></add-todo>
+        <todo @addTodo="addTodo" @removeTodo="removeTodo"></todo>
     </v-container>
 </template>
 
 <script>
-import AddTodo from '../components/AddTodo.vue'
+import Todo from '../components/Todo.vue'
 export default {
-  components: { AddTodo },
+  components: { Todo },
   name: 'TodoListPage',
   data() {
     return {
@@ -45,6 +45,7 @@ export default {
     // deadline이 3일이내로 남은 경우 경고표시 -> warning icon띄우면될듯
     // 공통함수 만들어야 할듯
     // 우측상단에 검색기능 추가 -> filteredItem넣어야할것 -> todoList대신 filteredTodoList추가
+    // https://vuetifyjs.com/en/components/data-tables/#custom-filter 검색은 여기 참고
     this.headers = [
         {
             text: 'No',
@@ -100,6 +101,11 @@ export default {
         // todoList.push({text, date, no});
         // localStorage.setItem('todoList', JSON.stringify(todoList));
         // this.todoList = todoList;
+    },
+    removeTodo() {
+      // 선택된 행이 있는지 여부 체크
+      // no를 보내 삭제
+      alert('remove');
     },
     handleRowClick (row, data) {
         data.select(!data.isSelected);
