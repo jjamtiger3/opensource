@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
+const fs = require("fs");
 const todoPath = __dirname + '/data/todoList.json';
 const encoding = 'utf-8';
 
@@ -12,6 +13,17 @@ app.get('/get_todo_lists', (req, res) => {
     const data = fs.readFileSync(todoPath);
     res.send(data);
 });
+
+app.get('/get_todo/:id', (req, res) => {
+  const fs = require('fs');
+  const data = fs.readFileSync(todoPath, encoding);
+  const id = parseInt(req.params.id);
+  const json = JSON.parse(data);
+  const filteredItem = json.filter((item) => {
+    return item.no === id;
+  });
+  res.send(filteredItem);
+})
 
 app.post('/add_todo', (req, res) => {
     const fs = require('fs');

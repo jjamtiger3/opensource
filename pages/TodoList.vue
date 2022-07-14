@@ -39,9 +39,13 @@ export default {
   },
   mounted() {
     // TODO 기한이 yyyy-MM-dd로 나오도록
-    // ADD구현 (완)
+    // READ
+    // 전체 리스트 조회
+    // 개별항목 조회
 
-    // REMOVE구현
+    // CREATE구현 (완)
+
+    // DELETE구현
     // -> 쓰래기통 아이콘 구현(완)
     // -> add옆 쓰래기통 구현(완)
     // -> 현재 선택된 행의 no를 출력(완)
