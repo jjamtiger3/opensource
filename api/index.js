@@ -18,11 +18,25 @@ app.post('/add_todo', (req, res) => {
     const data = fs.readFileSync(todoPath, encoding);
     const json = JSON.parse(data);
     const body = req.body;
-    json.todoList.push(body);
+    json.push(body);
     console.log(json);
     fs.writeFile(todoPath, JSON.stringify(json), function(err) {
       res.send(200);
     });
+});
+
+app.post('/remove_todo', (req, res) => {
+  const fs = require('fs');
+  const data = fs.readFileSync(todoPath, encoding);
+  const json = JSON.parse(data);
+  const body = req.body;
+  const removed_json = json.filter((item) => {
+    return body.indexOf(item.no) < 0;
+  });
+  console.log(removed_json);
+  fs.writeFile(todoPath, JSON.stringify(removed_json), function(err) {
+    res.send(200);
+  });
 });
 
 

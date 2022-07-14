@@ -27,15 +27,17 @@ export default {
   data() {
     return {
         todoList: [],
-        headers: []
+        headers: [],
+        selectedRows: []
     }
   },
   mounted() {
     // TODO 기한이 yyyy-MM-dd로 나오도록
     // ADD구현 (완)
     // REMOVE구현
-    // -> 쓰래기통 아이콘 구현
-    // -> add옆 쓰래기통 구현
+    // -> 쓰래기통 아이콘 구현(완)
+    // -> add옆 쓰래기통 구현(완)
+    // -> 현재 선택된 행의 no를 출력(완)
     // UPDATE구현
     // 완료여부가 체크박스로 나오도록
     // 할일 클릭시 input나오도록
@@ -46,6 +48,8 @@ export default {
     // 공통함수 만들어야 할듯
     // 우측상단에 검색기능 추가 -> filteredItem넣어야할것 -> todoList대신 filteredTodoList추가
     // https://vuetifyjs.com/en/components/data-tables/#custom-filter 검색은 여기 참고
+    // API명 변경 -> add_todo -> api/add_todo
+    // TODO에서 엔터치면 입력되도록
     this.headers = [
         {
             text: 'No',
@@ -79,7 +83,7 @@ export default {
         // const todoList = JSON.parse(localStorage.getItem('todoList')) || [];
         // return todoList;
         this.$axios.get('/get_todo_lists').then((res) => {
-            this.todoList = res.data.todoList;
+            this.todoList = res.data;
         });
     },
     addTodo(text, deadline) {
@@ -105,10 +109,21 @@ export default {
     removeTodo() {
       // 선택된 행이 있는지 여부 체크
       // no를 보내 삭제
-      alert('remove');
+      this.selectedRows.sort();
+      this.$axios.post('/remove_todo', this.selectedRows).then((res) => {
+        this.todoList = this.todoList.filter((item) => {
+          return this.selectedRows.indexOf(item.no) < 0;
+        });
+      });
     },
     handleRowClick (row, data) {
         data.select(!data.isSelected);
+        const index = this.selectedRows.indexOf(data.item.no);
+        if (index < 0) {
+          this.selectedRows.push(data.item.no);
+        } else {
+          this.selectedRows.splice(index, 1);
+        }
     }
   }
 }
