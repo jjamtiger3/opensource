@@ -88,7 +88,7 @@ export default {
     // 우측상단에 검색기능 추가 -> filteredItem넣어야할것 -> todoList대신 filteredTodoList추가(완)
     // https://vuetifyjs.com/en/components/data-tables/#custom-filter 검색은 여기 참고
     // API명 변경 -> add_todo -> api/add_todo
-    // TODO에서 엔터치면 입력되도록
+    // TODO에서 엔터치면 입력되도록(완)
     this.headers = [
       {
           text: 'No',

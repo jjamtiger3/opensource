@@ -2,7 +2,11 @@
     <v-container>
         <v-row>
           <v-col>
-              <v-text-field v-model="input_todo" label="할일"></v-text-field>
+              <v-text-field 
+                v-model="input_todo" 
+                label="할일"
+                @keydown="handleKeydown"
+              ></v-text-field>
           </v-col>
           <v-col>
             <v-menu
@@ -77,6 +81,11 @@ export default {
     removeTodo () {
       // 선택된 행 삭제 -> 선택된 행은 다수일 수 있음
       this.$emit('removeTodo');
+    },
+    handleKeydown (event) {
+      if (event.keyCode === 13) {
+        this.addTodo();
+      }
     }
   }
 }
