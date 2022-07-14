@@ -82,7 +82,8 @@ export default {
 
     // UPDATE구현
     // -> 완료여부가 체크박스로 나오도록(완)
-    // 수정버튼 클릭시 동시에 수정하는 폼 나오도록 구현
+    // -> 수정폼을 따로 만들어서 행 클릭시 수정폼에 데이터가 출력되도록
+    // -> 수정폼에서 저장버튼 클릭시 데이터 저장
 
     // 기타
     // deadline이 3일이내로 남은 경우 경고표시 -> warning icon띄우면될듯(완)
@@ -91,7 +92,7 @@ export default {
     // https://vuetifyjs.com/en/components/data-tables/#custom-filter 검색은 여기 참고
     // API명 변경 -> add_todo -> api/add_todo
     // TODO에서 엔터치면 입력되도록(완)
-    // 검색필더 로컬스토리지에 저장
+    // 검색필더 로컬스토리지에 저장(완)
     this.headers = [
       {
           text: 'No',
