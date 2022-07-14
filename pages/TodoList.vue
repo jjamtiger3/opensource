@@ -4,6 +4,15 @@
             <v-col>
                 <h1> TodoList Page </h1>
             </v-col>
+            <v-col>
+              <v-text-field
+                v-model="search"
+                append-icon="mdi-magnify"
+                label="검색"
+                single-line
+                hide-details
+              ></v-text-field>
+            </v-col>
         </v-row>
         <v-data-table
             :headers="headers"
@@ -11,24 +20,21 @@
             item-key="no"
             :items-per-page="5"
             :footer-props="footerProps"
+            :search="search"
             @item-selected="handleRowData"
             @toggle-select-all="handleAllData"
             show-select
             class="elevation-1"
             @click:row="handleRowClick"
             >
-          <v-dialog v-model="editDialog">
-            <edit-row ref="rowEditor" :edited-item="editedItem"></edit-row>
-          </v-dialog>
-          <template v-slot:item.actions="{ item }">
-            <v-icon
-              small
-              class="mr-2"
-              @click="editItem(item)"
-            >
-              mdi-pencil
-            </v-icon>
-          </template>
+            <template v-slot:item.deadline="{ item }">
+              <v-chip
+                :color="getDate(item.deadline)"
+                dark
+              >
+                {{ changeDateFormat(item.deadline) }}
+              </v-chip>
+            </template>
         </v-data-table>
         <todo @addTodo="addTodo" @removeTodo="removeTodo"></todo>
     </v-container>
@@ -43,6 +49,7 @@ export default {
     return {
         todoList: [],
         headers: [],
+        search: '',
         selectedRows: [],
         footerProps: {
           'items-per-page-options': [5, 10, 20, -1]
@@ -69,10 +76,9 @@ export default {
     // 수정버튼 클릭시 동시에 수정
 
     // 기타
-    // deadline이 3일이내로 남은 경우 경고표시 -> warning icon띄우면될듯
-    // 공통함수 만들어야 할듯
+    // deadline이 3일이내로 남은 경우 경고표시 -> warning icon띄우면될듯(완)
     // page-per-count 5 / 10 / 20 으로 설정 (완)
-    // 우측상단에 검색기능 추가 -> filteredItem넣어야할것 -> todoList대신 filteredTodoList추가
+    // 우측상단에 검색기능 추가 -> filteredItem넣어야할것 -> todoList대신 filteredTodoList추가(완)
     // https://vuetifyjs.com/en/components/data-tables/#custom-filter 검색은 여기 참고
     // API명 변경 -> add_todo -> api/add_todo
     // TODO에서 엔터치면 입력되도록
@@ -166,6 +172,20 @@ export default {
         //   this.selectedRows.splice(index, 1);
         // }
     },
+    getDate(date) {
+      const current = new Date().getTime();
+      const diff = Math.ceil((date - current) / (1000 * 60 * 60 * 24));
+      let color = '';
+      if (diff < 0) {
+        color = 'red';
+      } else if (diff >= 0 && diff <= 3) {
+        color = 'orange';
+      }
+      return color;
+    },
+    changeDateFormat(date) {
+      return new Date(date).toISOString().substring(0, 10);
+    }
   }
 }
 </script>
