@@ -10,6 +10,8 @@
             :items="todoList"
             item-key="no"
             :items-per-page="5"
+            @item-selected="handleRowData"
+            @toggle-select-all="handleAllData"
             show-select
             class="elevation-1"
             @click:row="handleRowClick"
@@ -34,16 +36,21 @@ export default {
   mounted() {
     // TODO 기한이 yyyy-MM-dd로 나오도록
     // ADD구현 (완)
+
     // REMOVE구현
     // -> 쓰래기통 아이콘 구현(완)
     // -> add옆 쓰래기통 구현(완)
     // -> 현재 선택된 행의 no를 출력(완)
+    // -> 체크박스 체크시 선택이 정상동작안함
+
     // UPDATE구현
+
+    // 기타
     // 완료여부가 체크박스로 나오도록
     // 할일 클릭시 input나오도록
     // 기한 클릭시 datepicker나오도록
     // 완료여부 클릭시 checkbox 나오도록
-    // multirow 선택후 삭제 -> 쓰래기통 구현
+    // multirow 선택후 삭제 -> 쓰래기통 구현(완)
     // deadline이 3일이내로 남은 경우 경고표시 -> warning icon띄우면될듯
     // 공통함수 만들어야 할듯
     // 우측상단에 검색기능 추가 -> filteredItem넣어야할것 -> todoList대신 filteredTodoList추가
@@ -114,7 +121,21 @@ export default {
         this.todoList = this.todoList.filter((item) => {
           return this.selectedRows.indexOf(item.no) < 0;
         });
+        this.selectedRows = [];
       });
+    },
+    handleRowData (data) {
+      if (data.value !== undefined) {
+        const index = this.selectedRows.indexOf(data.item.no);
+        if (data.value) {
+          this.selectedRows.push(data.item.no);
+        } else {
+          this.selectedRows.splice(index, 1);
+        }
+      }
+    },
+    handleAllData (data) {
+      this.selectedRows = data.items.map(item => item.no);
     },
     handleRowClick (row, data) {
         data.select(!data.isSelected);
