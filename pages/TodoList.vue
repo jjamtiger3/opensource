@@ -11,6 +11,7 @@
                 label="검색"
                 single-line
                 hide-details
+                @blur="onBlur"
               ></v-text-field>
             </v-col>
         </v-row>
@@ -119,6 +120,7 @@ export default {
       }
     ];
     this.getTodoList();
+    this.search = localStorage.getItem('searchWord');
   },
   methods: {
     getTodoList() {
@@ -198,6 +200,9 @@ export default {
     },
     changeDateFormat(date) {
       return new Date(date).toISOString().substring(0, 10);
+    },
+    onBlur() {
+      localStorage.setItem('searchWord', this.search);
     }
   }
 }
