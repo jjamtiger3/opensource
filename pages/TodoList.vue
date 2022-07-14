@@ -98,7 +98,7 @@ export default {
     getTodoList() {
         // const todoList = JSON.parse(localStorage.getItem('todoList')) || [];
         // return todoList;
-        this.$axios.get('/get_todo_lists').then((res) => {
+        this.$axios.get('/get_todo_list').then((res) => {
             this.todoList = res.data;
         });
     },

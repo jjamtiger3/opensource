@@ -8,7 +8,7 @@ const encoding = 'utf-8';
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
-app.get('/get_todo_lists', (req, res) => {
+app.get('/get_todo_list', (req, res) => {
     const fs = require('fs');
     const data = fs.readFileSync(todoPath);
     res.send(data);
