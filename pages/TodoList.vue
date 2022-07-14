@@ -35,6 +35,13 @@
                 {{ changeDateFormat(item.deadline) }}
               </v-chip>
             </template>
+            <template v-slot:item.done="{ item }">
+              <v-simple-checkbox
+                v-model="item.done"
+                disabled
+                @input="handleChecked"
+              ></v-simple-checkbox>
+            </template>
         </v-data-table>
         <todo @addTodo="addTodo" @removeTodo="removeTodo"></todo>
     </v-container>
@@ -72,7 +79,7 @@ export default {
     // -> 체크박스 체크시 선택이 정상동작안함(완)
 
     // UPDATE구현
-    // -> 완료여부가 체크박스로 나오도록
+    // -> 완료여부가 체크박스로 나오도록(완)
     // 수정버튼 클릭시 동시에 수정
 
     // 기타
@@ -163,6 +170,9 @@ export default {
     handleAllData (data) {
       this.selectedRows = data.items.map(item => item.no);
     },
+    handleChecked (event) {
+      console.log(event);
+    },
     handleRowClick (row, data) {
         // data.select(!data.isSelected);
         // const index = this.selectedRows.indexOf(data.item.no);
@@ -171,6 +181,7 @@ export default {
         // } else {
         //   this.selectedRows.splice(index, 1);
         // }
+        console.log(row, data);
     },
     getDate(date) {
       const current = new Date().getTime();
