@@ -17,13 +17,25 @@
             class="elevation-1"
             @click:row="handleRowClick"
             >
+          <v-dialog v-model="editDialog">
+            <edit-row ref="rowEditor" :edited-item="editedItem"></edit-row>
+          </v-dialog>
+          <template v-slot:item.actions="{ item }">
+            <v-icon
+              small
+              class="mr-2"
+              @click="editItem(item)"
+            >
+              mdi-pencil
+            </v-icon>
+          </template>
         </v-data-table>
         <todo @addTodo="addTodo" @removeTodo="removeTodo"></todo>
     </v-container>
 </template>
 
 <script>
-import Todo from '../components/Todo.vue'
+import Todo from '../components/Todo.vue';
 export default {
   components: { Todo },
   name: 'TodoListPage',
@@ -54,9 +66,7 @@ export default {
 
     // UPDATE구현
     // -> 완료여부가 체크박스로 나오도록
-    // -> 할일 클릭시 input나오도록
-    // -> 기한 클릭시 datepicker나오도록
-    // -> 완료여부 클릭시 checkbox 나오도록
+    // 수정버튼 클릭시 동시에 수정
 
     // 기타
     // deadline이 3일이내로 남은 경우 경고표시 -> warning icon띄우면될듯
@@ -67,30 +77,31 @@ export default {
     // API명 변경 -> add_todo -> api/add_todo
     // TODO에서 엔터치면 입력되도록
     this.headers = [
-        {
-            text: 'No',
-            align: 'start',
-            sortable: false,
-            value: 'no'
-        },
-        {
-            text: '할일',
-            align: 'start',
-            sortable: false,
-            value: 'text'
-        },
-        {
-            text: '기한',
-            align: 'start',
-            sortable: true,
-            value: 'deadline'
-        },
-        {
-            text: '완료',
-            align: 'start',
-            sortable: true,
-            value: 'done'
-        }
+      {
+          text: 'No',
+          sortable: false,
+          value: 'no'
+      },
+      {
+          text: '할일',
+          sortable: false,
+          value: 'text'
+      },
+      {
+          text: '기한',
+          sortable: true,
+          value: 'deadline'
+      },
+      {
+          text: '완료',
+          sortable: true,
+          value: 'done'
+      },
+      {
+          text: 'actions',
+          value: 'actions',
+          sortable: false
+      }
     ];
     this.getTodoList();
   },
@@ -147,14 +158,14 @@ export default {
       this.selectedRows = data.items.map(item => item.no);
     },
     handleRowClick (row, data) {
-        data.select(!data.isSelected);
-        const index = this.selectedRows.indexOf(data.item.no);
-        if (index < 0) {
-          this.selectedRows.push(data.item.no);
-        } else {
-          this.selectedRows.splice(index, 1);
-        }
-    }
+        // data.select(!data.isSelected);
+        // const index = this.selectedRows.indexOf(data.item.no);
+        // if (index < 0) {
+        //   this.selectedRows.push(data.item.no);
+        // } else {
+        //   this.selectedRows.splice(index, 1);
+        // }
+    },
   }
 }
 </script>
