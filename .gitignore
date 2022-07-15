@@ -88,4 +88,3 @@ sw.*
 
 # Vim swap files
 *.swp
-api/data/todoList.json
