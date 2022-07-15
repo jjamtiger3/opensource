@@ -99,7 +99,8 @@
   computed: {
     changeDateFormat: {
       get() {
-        return new Date(this.editedItem.deadline - new Date().getTimezoneOffset() * 60000).toISOString().substr(0, 10);
+        const deadLineTime = isNaN(this.editedItem.deadline) ? new Date(this.editedItem.deadline).getTime() : this.editedItem.deadline;
+        return new Date(deadLineTime - new Date().getTimezoneOffset() * 60000).toISOString().substr(0, 10);
       },
       set(value) {
         this.editedItem.deadline = new Date(value);

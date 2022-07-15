@@ -233,7 +233,7 @@ export default {
               return false;
             }
           });
-          this.todoList[itemIndex] = item;
+          this.todoList.splice(itemIndex, 1, item);
         } else {
 
         }
