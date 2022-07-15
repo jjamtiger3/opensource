@@ -2,8 +2,8 @@
     <v-container>
         <v-row>
           <v-col>
-              <v-text-field 
-                v-model="input_todo" 
+              <v-text-field
+                v-model="input_todo"
                 label="할일"
                 @keydown="handleKeydown"
               ></v-text-field>
@@ -65,7 +65,7 @@ export default {
   name: 'AddTodoList',
   data: () => ({
     input_todo: '',
-    date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
+    date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().substr(0, 10),
     menu: false,
   }),
   methods: {

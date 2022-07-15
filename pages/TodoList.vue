@@ -54,7 +54,7 @@
             </template>
         </v-data-table>
         <todo @addTodo="addTodo" @removeTodo="removeTodo"></todo>
-        <edit-dialog todo-list="todoList" ref="editDialog"></edit-dialog>
+        <edit-dialog ref="editDialog" @editSaved="save"></edit-dialog>
     </v-container>
 </template>
 
@@ -218,6 +218,9 @@ export default {
     },
     editItem (item) {
       this.$refs.editDialog.editItem(item);
+    },
+    save (item) {
+      debugger;
     }
   }
 }

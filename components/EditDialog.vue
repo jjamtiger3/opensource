@@ -46,10 +46,29 @@
                     sm="6"
                     md="4"
                   >
-                    <v-text-field
-                      v-model="editedItem.deadline"
-                      label="DeadLine"
-                    ></v-text-field>
+                    <v-menu
+                      v-model="menu"
+                      :close-on-content-click="false"
+                      :nudge-right="40"
+                      transition="scale-transition"
+                      offset-y
+                      min-width="auto"
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                          v-model="changeDateFormat"
+                          label="날짜선택"
+                          prepend-icon="mdi-calendar"
+                          readonly
+                          v-bind="attrs"
+                          v-on="on"
+                        ></v-text-field>
+                      </template>
+                      <v-date-picker
+                        v-model="changeDateFormat"
+                        @input="menu = false"
+                      ></v-date-picker>
+                    </v-menu>
                   </v-col>
                 </v-row>
               </v-container>
@@ -78,28 +97,26 @@
     </template>
 <script>
 export default {
-  props: {
-    todoList: []
-  },
   data: () => ({
     dialog: false,
-    dialogDelete: false,
-    _headers: [],
-    _todoList: [],
-    editedIndex: -1,
+    menu: false,
     editedItem: {
-      text: '',
-      no: null,
-      deadline: null,
-      done: false
-    },
-    defaultItem: {
       text: '',
       no: null,
       deadline: null,
       done: false
     }
   }),
+  computed: {
+    changeDateFormat: {
+      get() {
+        return new Date(this.editedItem.deadline - new Date().getTimezoneOffset() * 60000).toISOString().substr(0, 10);
+      },
+      set(value) {
+        this.editedItem.deadline = new Date(value);
+      }
+    }
+  },
 
   watch: {
     dialog (val) {
@@ -107,37 +124,26 @@ export default {
     }
   },
 
-  created () {
-    this.initialize();
-  },
-
   methods: {
-    initialize () {
-      this._todoList = this.todoList;
-    },
-
     editItem (item) {
-      this.editedIndex = this._todoList.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialog = true;
     },
 
     close () {
-      this.dialog = false
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-      })
+      this.editedItem = {
+        text: '',
+        no: null,
+        deadline: null,
+        done: false
+      };
+      this.dialog = false;
     },
 
     save () {
-      if (this.editedIndex > -1) {
-        Object.assign(this._todoList[this.editedIndex], this.editedItem);
-      } else {
-        this._todoList.push(this.editedItem);
-      }
+      this.$emit('editSaved', this.editedItem);
       this.close();
-    },
+    }
   },
 }
 </script>
