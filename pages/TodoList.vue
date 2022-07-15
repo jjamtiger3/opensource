@@ -43,6 +43,15 @@
                 @input="handleChecked"
               ></v-simple-checkbox>
             </template>
+            <template v-slot:item.actions="{ item }">
+              <v-icon
+                small
+                class="mr-2"
+                @click="editItem(item)"
+              >
+                mdi-pencil
+              </v-icon>
+            </template>
         </v-data-table>
         <todo @addTodo="addTodo" @removeTodo="removeTodo"></todo>
     </v-container>
@@ -66,7 +75,7 @@ export default {
   },
   mounted() {
     // TODO 기한이 yyyy-MM-dd로 나오도록(완)
-    
+
     // READ
     // 전체 리스트 조회 (완)
     // 개별항목 조회 (완)
