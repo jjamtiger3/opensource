@@ -37,6 +37,28 @@ app.post('/add_todo', (req, res) => {
     });
 });
 
+app.put('/api/todo/:id', (req, res) => {
+  const body = req.body;
+  const id = req.params.id;
+  const fs = require('fs');
+  const data = fs.readFileSync(todoPath, encoding);
+  const json = JSON.parse(data);
+  let itemIndex = 0;
+  json.forEach((jsonItem, index) => {
+    if (jsonItem.no === id) {
+      itemIndex = index;
+      return false;
+    }
+  });
+  const item = json[itemIndex];
+  Object.assign(item, body);
+  console.log(item);
+  json[itemIndex] = item;
+  fs.writeFile(todoPath, JSON.stringify(json), function(err) {
+    res.send(200);
+  });
+});
+
 app.post('/remove_todo', (req, res) => {
   const fs = require('fs');
   const data = fs.readFileSync(todoPath, encoding);

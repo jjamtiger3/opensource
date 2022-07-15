@@ -220,7 +220,24 @@ export default {
       this.$refs.editDialog.editItem(item);
     },
     save (item) {
-      debugger;
+      // TODO
+      // 1. API구현
+      // 2. 데이터 전송
+      // 3. 응답오면 저장
+      this.$axios.put(`/api/todo/${item.no}`, item).then((res) => {
+        if (res.status === 200) {
+          let itemIndex = 0;
+          this.todoList.forEach((todo, index) => {
+            if (todo.no === item.no) {
+              itemIndex = index;
+              return false;
+            }
+          });
+          this.todoList[itemIndex] = item;
+        } else {
+
+        }
+      });
     }
   }
 }
