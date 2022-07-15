@@ -54,13 +54,15 @@
             </template>
         </v-data-table>
         <todo @addTodo="addTodo" @removeTodo="removeTodo"></todo>
+        <edit-dialog todo-list="todoList" ref="editDialog"></edit-dialog>
     </v-container>
 </template>
 
 <script>
 import Todo from '../components/Todo.vue';
+import EditDialog from "../components/EditDialog";
 export default {
-  components: { Todo },
+  components: { Todo, EditDialog },
   name: 'TodoListPage',
   data() {
     return {
@@ -197,7 +199,7 @@ export default {
         // }
         console.log(row, data);
     },
-    getDate(date) {
+    getDate (date) {
       const current = new Date().getTime();
       const diff = Math.ceil((date - current) / (1000 * 60 * 60 * 24));
       let color = '';
@@ -208,11 +210,14 @@ export default {
       }
       return color;
     },
-    changeDateFormat(date) {
+    changeDateFormat (date) {
       return new Date(date).toISOString().substring(0, 10);
     },
-    onBlur() {
+    onBlur () {
       localStorage.setItem('searchWord', this.search);
+    },
+    editItem (item) {
+      this.$refs.editDialog.editItem(item);
     }
   }
 }
