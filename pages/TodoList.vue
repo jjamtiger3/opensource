@@ -70,6 +70,7 @@ export default {
         headers: [],
         search: '',
         selectedRows: [],
+        apiPath: '/api/todos',
         footerProps: {
           'items-per-page-options': [5, 10, 20, -1]
         }
@@ -138,12 +139,12 @@ export default {
     getTodoList() {
         // const todoList = JSON.parse(localStorage.getItem('todoList')) || [];
         // return todoList;
-        this.$axios.get('/api/todos').then((res) => {
+        this.$axios.get(this.apiPath).then((res) => {
             this.todoList = res.data;
         });
     },
     getTodo(no) {
-        this.$axios.get(`/api/todos/${no}`).then((res) => {
+        this.$axios.get(`${this.apiPath}/${no}`).then((res) => {
           console.log(res.data);
         });
     },
@@ -159,7 +160,7 @@ export default {
             done: false,
             deadline
         };
-        this.$axios.post('/api/todos', todo).then((res) => {
+        this.$axios.post(this.apiPath, todo).then((res) => {
             this.todoList.push(todo);
         });
 
@@ -178,7 +179,7 @@ export default {
       //   });
       //   this.selectedRows = [];
       // });
-      this.$axios.post('/api/delete/todos', this.selectedRows).then((res) => {
+      this.$axios.post(`${this.apiPath}/delete`, this.selectedRows).then((res) => {
         this.todoList = this.todoList.filter((item) => {
           return this.selectedRows.indexOf(item.no) < 0;
         });
@@ -213,8 +214,8 @@ export default {
     getDate (item) {
       const current = new Date().getTime();
       const { deadline, done } = item
-      const diff = Math.ceil((deadline - current) / (1000 * 60 * 60 * 24));
-      console.log(done);
+      const deadlineTime = new Date(deadline).getTime();
+      const diff = Math.ceil((deadlineTime - current) / (1000 * 60 * 60 * 24));
       let color = '';
       if (diff < 0) {
         color = 'red';
@@ -240,7 +241,7 @@ export default {
       // 1. API구현
       // 2. 데이터 전송
       // 3. 응답오면 저장
-      this.$axios.put(`/api/todo/${item.no}`, item).then((res) => {
+      this.$axios.put(`${this.apiPath}/${item.no}`, item).then((res) => {
         if (res.status === 200) {
           let itemIndex = 0;
           this.todoList.forEach((todo, index) => {

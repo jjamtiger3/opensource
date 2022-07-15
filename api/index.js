@@ -8,13 +8,13 @@ const encoding = 'utf-8';
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
-app.get('/api/todos', (req, res) => {
+app.get('/', (req, res) => {
     const fs = require('fs');
     const data = fs.readFileSync(todoPath);
     res.send(data);
 });
 
-app.get('/api/todos/:id', (req, res) => {
+app.get('/:id', (req, res) => {
   const fs = require('fs');
   const data = fs.readFileSync(todoPath, encoding);
   const id = parseInt(req.params.id);
@@ -25,7 +25,7 @@ app.get('/api/todos/:id', (req, res) => {
   res.send(filteredItem);
 })
 
-app.post('/api/todos', (req, res) => {
+app.post('/', (req, res) => {
     const fs = require('fs');
     const data = fs.readFileSync(todoPath, encoding);
     const json = JSON.parse(data);
@@ -37,7 +37,7 @@ app.post('/api/todos', (req, res) => {
     });
 });
 
-app.put('/api/todo/:id', (req, res) => {
+app.put('/:id', (req, res) => {
   const body = req.body;
   const id = parseInt(req.params.id);
   const fs = require('fs');
@@ -56,7 +56,7 @@ app.put('/api/todo/:id', (req, res) => {
   });
 });
 
-app.delete('/api/todos/:id', (req, res) => {
+app.delete('/:id', (req, res) => {
   const fs = require('fs');
   const data = fs.readFileSync(todoPath, encoding);
   const json = JSON.parse(data);
@@ -76,7 +76,7 @@ app.delete('/api/todos/:id', (req, res) => {
   });
 });
 
-app.post('/api/delete/todos', (req, res) => {
+app.post('/delete', (req, res) => {
   const fs = require('fs');
   const data = fs.readFileSync(todoPath, encoding);
   const json = JSON.parse(data);
@@ -91,4 +91,7 @@ app.post('/api/delete/todos', (req, res) => {
 });
 
 
-module.exports = app;
+module.exports = {
+  path: '/api/todos',
+  handler: app
+};
