@@ -30,7 +30,7 @@
             >
             <template v-slot:item.deadline="{ item }">
               <v-chip
-                :color="getDate(item.deadline)"
+                :color="getDate(item)"
                 dark
               >
                 {{ changeDateFormat(item.deadline) }}
@@ -93,8 +93,8 @@ export default {
 
     // UPDATE구현
     // -> 완료여부가 체크박스로 나오도록(완)
-    // -> 수정폼을 따로 만들어서 행 클릭시 수정폼에 데이터가 출력되도록
-    // -> 수정폼에서 저장버튼 클릭시 데이터 저장
+    // -> 수정폼을 따로 만들어서 행 클릭시 수정폼에 데이터가 출력되도록 (완)
+    // -> 수정폼에서 저장버튼 클릭시 데이터 저장 (완)
 
     // 기타
     // deadline이 3일이내로 남은 경우 경고표시 -> warning icon띄우면될듯(완)
@@ -138,8 +138,13 @@ export default {
     getTodoList() {
         // const todoList = JSON.parse(localStorage.getItem('todoList')) || [];
         // return todoList;
-        this.$axios.get('/get_todo_list').then((res) => {
+        this.$axios.get('/api/todos').then((res) => {
             this.todoList = res.data;
+        });
+    },
+    getTodo(no) {
+        this.$axios.get(`/api/todos/${no}`).then((res) => {
+          console.log(res.data);
         });
     },
     addTodo(text, deadline) {
@@ -154,7 +159,7 @@ export default {
             done: false,
             deadline
         };
-        this.$axios.post('/add_todo', todo).then((res) => {
+        this.$axios.post('/api/todos', todo).then((res) => {
             this.todoList.push(todo);
         });
 
@@ -166,7 +171,14 @@ export default {
       // 선택된 행이 있는지 여부 체크
       // no를 보내 삭제
       this.selectedRows.sort();
-      this.$axios.post('/remove_todo', this.selectedRows).then((res) => {
+      // 단일 행 삭제 API
+      // this.$axios.delete(`/api/todos/${this.selectedRows[0]}`).then((res) => {
+      //   this.todoList = this.todoList.filter((item) => {
+      //     return this.selectedRows.indexOf(item.no) < 0;
+      //   });
+      //   this.selectedRows = [];
+      // });
+      this.$axios.post('/api/delete/todos', this.selectedRows).then((res) => {
         this.todoList = this.todoList.filter((item) => {
           return this.selectedRows.indexOf(item.no) < 0;
         });
@@ -197,16 +209,20 @@ export default {
         // } else {
         //   this.selectedRows.splice(index, 1);
         // }
-        console.log(row, data);
     },
-    getDate (date) {
+    getDate (item) {
       const current = new Date().getTime();
-      const diff = Math.ceil((date - current) / (1000 * 60 * 60 * 24));
+      const { deadline, done } = item
+      const diff = Math.ceil((deadline - current) / (1000 * 60 * 60 * 24));
+      console.log(done);
       let color = '';
       if (diff < 0) {
         color = 'red';
       } else if (diff >= 0 && diff <= 3) {
         color = 'orange';
+      }
+      if (done) {
+        color = 'green';
       }
       return color;
     },
