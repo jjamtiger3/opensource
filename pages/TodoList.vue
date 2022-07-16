@@ -137,15 +137,20 @@ export default {
   },
   methods: {
     getTodoList() {
-        // const todoList = JSON.parse(localStorage.getItem('todoList')) || [];
-        // return todoList;
         this.$axios.get(this.apiPath).then((res) => {
+          if (res.status === 200) {
             this.todoList = res.data;
+          }
+        }, (rej) => {
+          this.todoList = JSON.parse(localStorage.getItem('todoList')) || [];
         });
     },
     getTodo(no) {
         this.$axios.get(`${this.apiPath}/${no}`).then((res) => {
           console.log(res.data);
+        }, (rej) => {
+          const todos = JSON.parse(localStorage.getItem('todoList')) || [];
+          const todo = todos.filter(todo => todo.no === no)[0];
         });
     },
     addTodo(text, deadline) {
@@ -162,29 +167,26 @@ export default {
         };
         this.$axios.post(this.apiPath, todo).then((res) => {
             this.todoList.push(todo);
+        }, (rej) => {
+            const todos = JSON.parse(localStorage.getItem('todoList')) || [];
+            todos.push(todo);
+            localStorage.setItem('todoList', JSON.stringify(todos));
         });
-
-        // todoList.push({text, date, no});
-        // localStorage.setItem('todoList', JSON.stringify(todoList));
-        // this.todoList = todoList;
     },
     removeTodo() {
-      // 선택된 행이 있는지 여부 체크
-      // no를 보내 삭제
       this.selectedRows.sort();
-      // 단일 행 삭제 API
-      // this.$axios.delete(`/api/todos/${this.selectedRows[0]}`).then((res) => {
-      //   this.todoList = this.todoList.filter((item) => {
-      //     return this.selectedRows.indexOf(item.no) < 0;
-      //   });
-      //   this.selectedRows = [];
-      // });
       this.$axios.post(`${this.apiPath}/delete`, this.selectedRows).then((res) => {
-        this.todoList = this.todoList.filter((item) => {
-          return this.selectedRows.indexOf(item.no) < 0;
-        });
-        this.selectedRows = [];
+        _removeTodo(this);
+      }, (rej) => {
+        _removeTodo(this);
+        localStorage.setItem('todoList', JSON.stringify(todos));
       });
+      function _removeTodo (self) {
+        self.todoList = self.todoList.filter((item) => {
+          return self.selectedRows.indexOf(item.no) < 0;
+        });
+        self.selectedRows = [];
+      }
     },
     handleRowData (data) {
       if (data.value !== undefined) {
@@ -242,19 +244,22 @@ export default {
       // 2. 데이터 전송
       // 3. 응답오면 저장
       this.$axios.put(`${this.apiPath}/${item.no}`, item).then((res) => {
-        if (res.status === 200) {
-          let itemIndex = 0;
-          this.todoList.forEach((todo, index) => {
-            if (todo.no === item.no) {
-              itemIndex = index;
-              return false;
-            }
-          });
-          this.todoList.splice(itemIndex, 1, item);
-        } else {
-
-        }
+          _saveItem(this.todoList, item.no);
+      }, (rej) => {
+          _saveItem(this.todoList, item.no);
+          localStorage.setItem('todoList', JSON.stringify(this.todoList));
       });
+
+      function _saveItem (todoList, no) {
+        let itemIndex = 0;
+        todoList.forEach((todo, index) => {
+          if (todo.no === no) {
+            itemIndex = index;
+            return false;
+          }
+        });
+        todoList.splice(itemIndex, 1, item);
+      }
     }
   }
 }
