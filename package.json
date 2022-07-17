@@ -30,5 +30,11 @@
     "jest": "^27.4.4",
     "supertest": "^6.2.4",
     "vue-jest": "^3.0.4"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ]
   }
 }
