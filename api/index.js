@@ -90,7 +90,6 @@ app.post('/delete', (req, res) => {
   });
 });
 
-
 module.exports = {
   path: '/api/todos',
   handler: app
