@@ -71,5 +71,16 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
+  },
+  router: {
+    mode: 'history',
+    extendRoutes (routes, resolve) {
+      routes.length = 0;
+      routes.push({
+        path: '/',
+        component: resolve(__dirname, 'pages/TodoList.vue'),
+        name: 'TodoList'
+      })
+    }
   }
 }
