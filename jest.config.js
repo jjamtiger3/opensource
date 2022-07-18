@@ -1,4 +1,5 @@
 module.exports = {
+  setupFiles: ['<rootDir>/test/setup.js'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
     '^~/(.*)$': '<rootDir>/$1',
@@ -18,5 +19,9 @@ module.exports = {
     '<rootDir>/components/**/*.vue',
     '<rootDir>/pages/**/*.vue'
   ],
-  testEnvironment: 'jsdom'
+  testEnvironment: 'jsdom',
+  moduleDirectories: [
+    'node_modules',
+    'src'
+  ]
 }

@@ -30,7 +30,7 @@
             >
             <template v-slot:item.deadline="{ item }">
               <v-chip
-                :color="getDate(item.deadline)"
+                :color="getDate(item)"
                 dark
               >
                 {{ changeDateFormat(item.deadline) }}
@@ -70,6 +70,7 @@ export default {
         headers: [],
         search: '',
         selectedRows: [],
+        apiPath: '/api/todos',
         footerProps: {
           'items-per-page-options': [5, 10, 20, -1]
         }
@@ -93,8 +94,8 @@ export default {
 
     // UPDATE구현
     // -> 완료여부가 체크박스로 나오도록(완)
-    // -> 수정폼을 따로 만들어서 행 클릭시 수정폼에 데이터가 출력되도록
-    // -> 수정폼에서 저장버튼 클릭시 데이터 저장
+    // -> 수정폼을 따로 만들어서 행 클릭시 수정폼에 데이터가 출력되도록 (완)
+    // -> 수정폼에서 저장버튼 클릭시 데이터 저장 (완)
 
     // 기타
     // deadline이 3일이내로 남은 경우 경고표시 -> warning icon띄우면될듯(완)
@@ -136,10 +137,20 @@ export default {
   },
   methods: {
     getTodoList() {
-        // const todoList = JSON.parse(localStorage.getItem('todoList')) || [];
-        // return todoList;
-        this.$axios.get('/get_todo_list').then((res) => {
+        this.$axios.get(this.apiPath).then((res) => {
+          if (res.status === 200) {
             this.todoList = res.data;
+          }
+        }, (rej) => {
+          this.todoList = JSON.parse(localStorage.getItem('todoList')) || [];
+        });
+    },
+    getTodo(no) {
+        this.$axios.get(`${this.apiPath}/${no}`).then((res) => {
+          console.log(res.data);
+        }, (rej) => {
+          const todos = JSON.parse(localStorage.getItem('todoList')) || [];
+          const todo = todos.filter(todo => todo.no === no)[0];
         });
     },
     addTodo(text, deadline) {
@@ -154,24 +165,28 @@ export default {
             done: false,
             deadline
         };
-        this.$axios.post('/add_todo', todo).then((res) => {
+        this.$axios.post(this.apiPath, todo).then((res) => {
             this.todoList.push(todo);
+        }, (rej) => {
+            const todos = JSON.parse(localStorage.getItem('todoList')) || [];
+            todos.push(todo);
+            localStorage.setItem('todoList', JSON.stringify(todos));
         });
-
-        // todoList.push({text, date, no});
-        // localStorage.setItem('todoList', JSON.stringify(todoList));
-        // this.todoList = todoList;
     },
     removeTodo() {
-      // 선택된 행이 있는지 여부 체크
-      // no를 보내 삭제
       this.selectedRows.sort();
-      this.$axios.post('/remove_todo', this.selectedRows).then((res) => {
-        this.todoList = this.todoList.filter((item) => {
-          return this.selectedRows.indexOf(item.no) < 0;
-        });
-        this.selectedRows = [];
+      this.$axios.post(`${this.apiPath}/delete`, this.selectedRows).then((res) => {
+        _removeTodo(this);
+      }, (rej) => {
+        _removeTodo(this);
+        localStorage.setItem('todoList', JSON.stringify(todos));
       });
+      function _removeTodo (self) {
+        self.todoList = self.todoList.filter((item) => {
+          return self.selectedRows.indexOf(item.no) < 0;
+        });
+        self.selectedRows = [];
+      }
     },
     handleRowData (data) {
       if (data.value !== undefined) {
@@ -197,16 +212,20 @@ export default {
         // } else {
         //   this.selectedRows.splice(index, 1);
         // }
-        console.log(row, data);
     },
-    getDate (date) {
+    getDate (item) {
       const current = new Date().getTime();
-      const diff = Math.ceil((new Date(date).getTime() - current) / (1000 * 60 * 60 * 24));
+      const { deadline, done } = item
+      const deadlineTime = new Date(deadline).getTime();
+      const diff = Math.ceil((deadlineTime - current) / (1000 * 60 * 60 * 24));
       let color = '';
       if (diff < 0) {
         color = 'red';
       } else if (diff >= 0 && diff <= 3) {
         color = 'orange';
+      }
+      if (done) {
+        color = 'green';
       }
       return color;
     },
@@ -224,20 +243,23 @@ export default {
       // 1. API구현
       // 2. 데이터 전송
       // 3. 응답오면 저장
-      this.$axios.put(`/api/todo/${item.no}`, item).then((res) => {
-        if (res.status === 200) {
-          let itemIndex = 0;
-          this.todoList.forEach((todo, index) => {
-            if (todo.no === item.no) {
-              itemIndex = index;
-              return false;
-            }
-          });
-          this.todoList.splice(itemIndex, 1, item);
-        } else {
-
-        }
+      this.$axios.put(`${this.apiPath}/${item.no}`, item).then((res) => {
+          _saveItem(this.todoList, item.no);
+      }, (rej) => {
+          _saveItem(this.todoList, item.no);
+          localStorage.setItem('todoList', JSON.stringify(this.todoList));
       });
+
+      function _saveItem (todoList, no) {
+        let itemIndex = 0;
+        todoList.forEach((todo, index) => {
+          if (todo.no === no) {
+            itemIndex = index;
+            return false;
+          }
+        });
+        todoList.splice(itemIndex, 1, item);
+      }
     }
   }
 }

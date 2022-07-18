@@ -8,24 +8,26 @@ const encoding = 'utf-8';
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
-app.get('/get_todo_list', (req, res) => {
+app.get('/api/todos', (req, res) => {
     const fs = require('fs');
     const data = fs.readFileSync(todoPath);
-    res.send(data);
+    res.json({data: data});
 });
 
-app.get('/get_todo/:id', (req, res) => {
+app.get('/api/todos/:id', (req, res) => {
   const fs = require('fs');
   const data = fs.readFileSync(todoPath, encoding);
   const id = parseInt(req.params.id);
   const json = JSON.parse(data);
   const filteredItem = json.filter((item) => {
     return item.no === id;
+  })[0];
+  res.json({
+    data: filteredItem
   });
-  res.send(filteredItem);
-})
+});
 
-app.post('/add_todo', (req, res) => {
+app.post('/api/todos', (req, res) => {
     const fs = require('fs');
     const data = fs.readFileSync(todoPath, encoding);
     const json = JSON.parse(data);
@@ -37,7 +39,7 @@ app.post('/add_todo', (req, res) => {
     });
 });
 
-app.put('/api/todo/:id', (req, res) => {
+app.put('/api/todos/:id', (req, res) => {
   const body = req.body;
   const id = parseInt(req.params.id);
   const fs = require('fs');
@@ -56,7 +58,27 @@ app.put('/api/todo/:id', (req, res) => {
   });
 });
 
-app.post('/remove_todo', (req, res) => {
+app.delete('/api/todos/:id', (req, res) => {
+  const fs = require('fs');
+  const data = fs.readFileSync(todoPath, encoding);
+  const json = JSON.parse(data);
+  // const body = req.body;
+  console.log(req.params.id);
+  const id = parseInt(req.params.id);
+  let itemIndex = 0;
+  json.forEach((jsonItem, index) => {
+    if (jsonItem.no === id) {
+      itemIndex = index;
+      return false;
+    }
+  });
+  json.splice(itemIndex, 1);
+  fs.writeFile(todoPath, JSON.stringify(json), function(err) {
+    res.send(200);
+  });
+});
+
+app.post('/api/todos/delete', (req, res) => {
   const fs = require('fs');
   const data = fs.readFileSync(todoPath, encoding);
   const json = JSON.parse(data);
@@ -70,5 +92,4 @@ app.post('/remove_todo', (req, res) => {
   });
 });
 
-
-module.exports = app;
+module.exports = app.listen(3000);
