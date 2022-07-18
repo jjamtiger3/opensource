@@ -133,7 +133,7 @@ export default {
       }
     ];
     this.getTodoList();
-    this.search = localStorage.getItem('searchWord');
+    this.search = localStorage.getItem('searchWord') || '';
   },
   methods: {
     getTodoList() {
