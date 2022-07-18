@@ -201,7 +201,7 @@ export default {
     },
     getDate (date) {
       const current = new Date().getTime();
-      const diff = Math.ceil((date - current) / (1000 * 60 * 60 * 24));
+      const diff = Math.ceil((new Date(date).getTime() - current) / (1000 * 60 * 60 * 24));
       let color = '';
       if (diff < 0) {
         color = 'red';
