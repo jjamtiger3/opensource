@@ -11,7 +11,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.get('/api/todos', (req, res) => {
     const fs = require('fs');
     const data = fs.readFileSync(todoPath);
-    res.json({data: data});
+    res.send(data);
 });
 
 app.get('/api/todos/:id', (req, res) => {
@@ -92,4 +92,9 @@ app.post('/api/todos/delete', (req, res) => {
   });
 });
 
-module.exports = app.listen(3000);
+console.log(process.env.NODE_ENV)
+if (process.env.NODE_ENV === 'development') {
+  module.exports = app;
+} else {
+  module.exports = app.listen(3000);
+}
